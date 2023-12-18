@@ -1,0 +1,86 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+  @import url('https://fonts.googleapis.com/css2?family=Alkatra&family=Anton&family=Anuphan:wght@500&family=Lobster&family=Pacifico&family=Rubik+Wet+Paint&family=Tsukimi+Rounded:wght@300&display=swap');
+
+body{
+background-color: antiquewhite;
+}
+h1{
+    font-size: 3rem;
+    text-decoration: underline;
+    text-align: center;
+}
+.canvas{
+    height: 90vh;
+    width: 90vw;
+    background-color: antiquewhite;
+    box-shadow: 0.8rem 0.8rem 0rem grey;
+    position: absolute;
+    left: 5%;
+    background-image: url(img/s_background.jpg);
+    background-repeat: no-repeat;
+    background-size: 100vw 100vh;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+#snakeGame{
+    background: linear-gradient(rgb(197, 224, 110), rgb(165, 236, 139));
+    height: 80vmin;
+    width: 90vmin;
+    border: 2px solid black;
+    display: grid;
+    grid-template-columns: repeat(18, 1fr);
+    grid-template-rows: repeat(18, 1fr);
+}
+.s_food{
+    background-image: url(img/s_food.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+.snake{
+    background: linear-gradient(red, purple);
+    border-radius: 25%;
+}
+.s_head{
+    background-image: url(img/s_head.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+#count_score{
+    position: absolute;
+    top: 2rem;
+    right:14rem;
+    height: 3rem;
+    width: 4rem;
+    background: linear-gradient(aqua, yellow);
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: x-large;
+}
+.Score_board{
+   margin-right: 1rem; 
+}
+.Score_board h3{
+    position: absolute;
+    top: 5rem;
+    right:14rem;
+   font-size: x-large;
+   font-family: 'Alkatra', cursive;
+}
+#hiScoreBox{
+    background: linear-gradient(aqua, rgb(135, 100, 100));
+    padding: 1rem;
+    border-radius: 2rem;
+    position: absolute;
+    top: 9rem;
+    right:7rem;
+   font-size: x-large;
+   font-family: 'Alkatra', cursive;
+}

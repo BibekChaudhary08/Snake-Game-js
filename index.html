@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Bibek Snake Game</h1>
+    <div class="canvas">
+        <div class="Score_board">
+            <div id="count_score"></div>
+            <h3>Score</h3>
+        </div>
+        <div id="hiScoreBox">
+            Highest Score: 0
+        </div>
+        <div id="snakeGame">
+            
+        </div>
+    </div>
+    <audio id="gameSound" src="audio/s_background.mp3"></audio>
+    <audio id="snakeFood" src="audio/s_eating.mp3"></audio>
+    <audio id="snakeGameover" src="audio/s_gameover.mp3"></audio>
+</body>
+
+<script>
+
+let snakeArr = [{ x: 10, y: 15 }];
+let inputDir = { x: 0, y: 0 };  //for to move the snake in any direction. Initially snake is not moving in x:0 & y:0
+let gameSound = document.getElementById("gameSound")
+let snakeFood = document.getElementById("snakeFood");
+let snakeGameover = document.getElementById("snakeGameover");
+let snakeGame = document.getElementById('snakeGame');
+let count_score = document.getElementById('count_score');
+let hiScoreBox = document.getElementById('hiScoreBox');
+let speed = 6;
+let score = 0;
+let lastPaintTime = 0;
+let food = { x: 5, y: 10 };
+
+// Function to get the highest score from local storage
+function getHiScore() {
+    let hiScore = localStorage.getItem("hiScore");
+    return hiScore ? JSON.parse(hiScore) : 0;    //this line is to retrieve the highest score from localStorage and convert it to a number or return '0' if there is no previous highest score stored.
+}
+
+// Function to set the highest score to local storage
+function setHiScore(score) {
+    localStorage.setItem("hiScore", JSON.stringify(score));
+}
+
+function startSnakeGame(cTime) {
+    window.requestAnimationFrame(startSnakeGame);
+    if (cTime - lastPaintTime >= 1000 / speed) {
+        lastPaintTime = cTime;
+        gameEngine();
+    }
+}
+
+// when snake collides
+function snakeCollide(snakeCol) {
+    for (let i = 1; i < snakeArr.length; i++) { // i = 1, which means it skips the first element (index 0) of the snakeArr.
+        if(snakeCol[i].x === snakeArr[0].x && snakeCol[i].y === snakeArr[0].y){     // when snake body collides with snake head
+            return true; 
+        }
+    }
+    if(snakeCol[0].x >= 19 || snakeCol[0].x < 0 || snakeCol[0].y >= 19 || snakeCol[0].y < 0){  // when snake head collides with the wall of the snake game
+        return true;
+    }
+    return false; 
+}
+
+function gameEngine() {
+    if (snakeCollide(snakeArr)) {
+        snakeGameover.play();
+        alert("Game Over, Press any Key to Start");
+        gameSound.pause();
+        inputDir = { x: 0, y: 0 };
+        snakeArr = [{ x: 10, y: 15 }];
+        gameSound.play();
+        score = 0;
+        count_score.innerHTML = score;
+    }
+
+    snakeGame.innerHTML = " ";
+    snakeArr.forEach((e, index) => {
+        let snakeElm = document.createElement('div');
+        snakeElm.style.gridRowStart = e.y;      // this e.y & e.x will shows the position of snake 
+        snakeElm.style.gridColumnStart = e.x;
+        if (index === 0) {
+            snakeElm.classList.add('s_head');
+        } else {
+            snakeElm.classList.add('snake');
+        }
+        snakeGame.appendChild(snakeElm);
+    })
+
+    let foodElm = document.createElement('div');
+    foodElm.style.gridRowStart = food.y;
+    foodElm.style.gridColumnStart = food.x;
+    foodElm.classList.add('s_food');
+    snakeGame.appendChild(foodElm);
+
+    if (snakeArr[0].x === food.x && snakeArr[0].y === food.y) {
+        snakeFood.play();
+        count_score.innerHTML = ++score;
+      //  console.log(score);
+        snakeArr.unshift({ x: snakeArr[0].x + inputDir.x, y: snakeArr[0].y + inputDir.y });   // for to make new head of the snake 
+        let a = 2; // this a & b makes food position around the center part snake game
+        let b = 16;
+        food = { x: Math.round(a + (b - a) * Math.random()), y: Math.round(a + (b - a) * Math.random()) };
+
+        updateHiScore();
+    }
+
+    for (let i = snakeArr.length - 2; i >= 0; i--) {
+        snakeArr[i + 1] = { ...snakeArr[i] };           // for to move snake body
+    }
+    snakeArr[0].x += inputDir.x;              // for to move snake head
+    snakeArr[0].y += inputDir.y;
+}
+
+//update highest score if it breaks the previous highest score
+function updateHiScore() {
+    let hiScore = getHiScore();
+    if (score > hiScore) {
+        hiScore = score;
+        setHiScore(hiScore);
+        hiScoreBox.innerHTML = "Highest Score: " + hiScore;
+    }
+}
+
+window.addEventListener("load", () => {
+    hiScoreBox.innerHTML = "Highest Score: " + getHiScore();
+    window.requestAnimationFrame(startSnakeGame);
+});
+
+window.addEventListener("keydown", e => {
+    gameSound.play();
+    inputDir = { x: 1, y: 0};  // snake game starts from here
+    switch (e.key) {
+        case "ArrowUp":
+            inputDir.x = 0;
+            inputDir.y = -1;
+            console.log("ArrowUp");
+            break;
+
+        case "ArrowDown":
+            inputDir.x = 0;
+            inputDir.y = 1;
+            console.log("ArrowDown");
+            break;
+
+        case "ArrowRight":
+            inputDir.x = 1;
+            inputDir.y = 0;
+            console.log("ArrowRight");
+            break;
+
+        case "ArrowLeft":
+            inputDir.x = -1;
+            inputDir.y = 0;
+            console.log("ArrowLeft");
+            break;
+
+        default:
+            break;
+    }
+});
+
+</script>
+</html>
